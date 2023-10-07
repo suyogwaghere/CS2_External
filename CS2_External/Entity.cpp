@@ -22,6 +22,8 @@ bool CEntity::UpdateController(const DWORD64& PlayerControllerAddress)
 		return false;
 	if (!this->Controller.GetIsAlive())
 		return false;
+	if (!this->Controller.GetIsScoped())
+		return false;
 	if (!this->Controller.GetTeamID())
 		return false;
 	if (!this->Controller.GetPlayerName())
@@ -76,6 +78,37 @@ bool PlayerController::GetIsAlive()
 {
 	return GetDataAddressWithOffset<int>(Address, Offset::Entity.IsAlive, this->AliveStatus);
 }
+bool PlayerController::GetIsScoped()
+{
+	return GetDataAddressWithOffset<int>(Address, Offset::Entity.IsScoped, this->IsScopedStatus);
+}
+
+bool PlayerController::GetWeaponName()
+{
+	DWORD64 WeaponNameAddress = 0;
+	char Buffer[MAX_PATH]{};
+
+	WeaponNameAddress = ProcessMgr.TraceAddress(this->Address + Offset::Pawn.m_hActiveWeapon, { 0xFFF });
+	// WeaponNameAddress = ProcessMgr.TraceAddress(this->Address + Offset::Pawn.pClippingWeapon, { 0x10,0x20 ,0x0 });
+	if (WeaponNameAddress == 0)
+		return false;
+
+	if (!ProcessMgr.ReadMemory(WeaponNameAddress, Buffer, MAX_PATH))
+		return false;
+
+	WeaponName = std::string(Buffer);
+	std::size_t Index = WeaponName.find("_");
+	if (Index == std::string::npos || WeaponName.empty())
+	{
+		WeaponName = "Weapon_None";
+	}
+	else
+	{
+		WeaponName = WeaponName.substr(Index + 1, WeaponName.size() - Index - 1);
+	}
+
+	return true;
+}
 
 bool PlayerController::GetPlayerName()
 {
@@ -105,7 +138,8 @@ bool PlayerPawn::GetWeaponName()
 {
 	DWORD64 WeaponNameAddress = 0;
 	char Buffer[MAX_PATH]{};
-	
+	DWORD64 addddd = 0x17DC158;
+	//WeaponNameAddress = ProcessMgr.TraceAddress(this->Address + Offset::Pawn.pClippingWeapon, { 0xFFF});
 	WeaponNameAddress = ProcessMgr.TraceAddress(this->Address + Offset::Pawn.pClippingWeapon, { 0x10,0x20 ,0x0 });
 	if (WeaponNameAddress == 0)
 		return false;
@@ -183,6 +217,10 @@ bool PlayerPawn::GetFov()
 bool CEntity::IsAlive()
 {
 	return this->Controller.AliveStatus == 1 && this->Controller.Health > 0;
+}
+bool CEntity::IsScoped()
+{
+	return this->Controller.IsScopedStatus == 1 && this->Controller.IsScopedStatus > 0;
 }
 
 bool CEntity::IsInScreen()

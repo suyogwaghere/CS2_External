@@ -15,6 +15,7 @@ namespace Offset
 		DWORD Health = 0x808;
 		DWORD TeamID = 0x3BF;
 		DWORD IsAlive = 0x804;
+		DWORD IsScoped  = 0x1388;
 		DWORD PlayerPawn = 0x7FC;
 		DWORD iszPlayerName = 0x610;
 	}Entity;
@@ -29,6 +30,7 @@ namespace Offset
 		DWORD angEyeAngles = 0x1500;
 		DWORD vecLastClipCameraPos = 0x1274;
 		DWORD pClippingWeapon = 0x1290;
+		DWORD m_hActiveWeapon = 0x60;
 		DWORD iShotsFired = 0x1404;
 		DWORD aimPunchAngle = 0x1704;
 		DWORD iIDEntIndex = 0x152C;
@@ -46,6 +48,6 @@ namespace Offset
 		const std::string LocalPlayerPawn = "48 8D 05 ?? ?? ?? ?? C3 CC CC CC CC CC CC CC CC 48 83 EC ?? 8B 0D";
 	}
 
-	// 一键更新基址
+	// 脪禄录眉赂眉脨脗禄霉脰路
 	bool UpdateOffsets();
 }

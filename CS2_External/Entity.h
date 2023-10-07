@@ -9,14 +9,18 @@ public:
 	DWORD64 Address = 0;
 	int TeamID = 0;
 	int Health = 0;
+	int IsScopedStatus = 0;
 	int AliveStatus = 0;
 	DWORD Pawn = 0;
 	std::string PlayerName;
+	std::string WeaponName;
 public:
 	bool GetTeamID();
 	bool GetHealth();
 	bool GetIsAlive();
 	bool GetPlayerName();
+	bool GetIsScoped();
+	bool GetWeaponName();
 	DWORD64 GetPlayerPawnAddress();
 };
 
@@ -53,13 +57,14 @@ public:
 	PlayerController Controller;
 	PlayerPawn Pawn;
 public:
-	// ¸üÐÂÊý¾Ý
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	bool UpdateController(const DWORD64& PlayerControllerAddress);
 	bool UpdatePawn(const DWORD64& PlayerPawnAddress);
-	// ÊÇ·ñ´æ»î
+	// ï¿½Ç·ï¿½ï¿½ï¿½
 	bool IsAlive();
-	// ÊÇ·ñÔÚÆÁÄ»ÄÚ
+	bool IsScoped();
+	// ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½
 	bool IsInScreen();
-	// »ñÈ¡¹Ç÷ÀÊý¾Ý
+	// ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	CBone GetBone() const;
 };

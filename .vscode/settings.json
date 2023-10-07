@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.ejs": "html",
+    "*.css": "tailwindcss",
+    "iomanip": "cpp"
+  },
+  "C_Cpp.errorSquiggles": "disabled"
+}

@@ -3,6 +3,7 @@
 #include "MenuConfig.hpp"
 #include "Utils/ConfigMenu.hpp"
 #include "Utils/ConfigSaver.hpp"
+#include "Head.h"
 
 void Cheats::Menu()
 {
@@ -117,7 +118,7 @@ void Cheats::Menu()
 				TriggerBot::SetHotKey(MenuConfig::TriggerHotKey);
 			}
 
-			DWORD TriggerDelayMin = 15, TriggerDelayMax = 170;
+			DWORD TriggerDelayMin = 5, TriggerDelayMax = 170;
 			Gui.SliderScalarEx1("Delay", ImGuiDataType_U32, &TriggerBot::TriggerDelay, &TriggerDelayMin, &TriggerDelayMax, "%d", ImGuiSliderFlags_None);
 
 		}
@@ -312,11 +313,38 @@ void Cheats::Run()
 		Render::DrawFov(LocalEntity, MenuConfig::FovLineSize, MenuConfig::FovLineColor, 1);
 
 	// Radar render
-	if(MenuConfig::ShowRadar)
-		Radar.Render();
+	if (MenuConfig::ShowRadar)
+	{
+		//Radar.Render();
+		DWORD dw_LocalPlayer = 0x187AC48;
+		DWORD dwEntityList = 0x178D8E8;
+		DWORD m_iItemDefinitionIndex = 0x1BA;
+		DWORD m_hActiveWeapon = 0x48;
+		DWORD m_bIsScoped = 0x1388;
+		DWORD m_pClippingWeapon = 0x1290;
+		DWORD teamNum = 0x3BF;
+		DWORD m_bSpotted = 0x8;
+
+		Memory::Memory CS_Mem = { "cs2.exe" };
+		uintptr_t client = CS_Mem.Get_Module("client.dll");
+		const auto localTeam = CS_Mem.Read<std::uintptr_t>(client + teamNum);
+		//const auto globalteam = Entity.Pawn.TeamID;
+
+		std::cout << "\n\n[Radar] LocalTeam:" << localTeam << std::endl;
+		for (auto i = 1; i <= 64; ++i)
+		{
+			const auto entity = CS_Mem.Read<std::uintptr_t>(client + dwEntityList + i * 0x10);
+			//const auto globalteam = CS_Mem.Read<std::uintptr_t>(entity + teamNum);
+			//std::cout << "[Radar] GlobalTeam:" << globalteam << std::endl;
+			//if (CS_Mem.Read<std::uintptr_t>(entity + teamNum) == localTeam)
+			//	continue;
+
+			//CS_Mem.Write<int>(entity + m_bSpotted, 1);
+		}
+	}
 	
 	// TriggerBot
-	if (MenuConfig::TriggerBot && GetAsyncKeyState(TriggerBot::HotKey))
+	if (MenuConfig::TriggerBot  )
 		TriggerBot::Run(LocalEntity);
 
 	// HeadShoot Line
